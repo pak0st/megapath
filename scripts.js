@@ -1,4 +1,4 @@
-// Data for words based on class and language
+// Data for words by class and language
 const wordData = {
     yud: {
         russian: [
@@ -15,28 +15,23 @@ const wordData = {
             { hebrew: "אטום", translation: "atom" },
             { hebrew: "מולקולה", translation: "molecule" },
             { hebrew: "תרכובת", translation: "compound" },
-        ]
+        ],
     },
 };
 
-// Variables to store the selected class and language
+// Default selection
 let selectedClass = "yud";
 let selectedLanguage = "russian";
 
-// Start the Flashcards Game
+// Start the Flashcards game
 function startFlashcards() {
-    const gameArea = document.getElementById('game-area');
+    const gameArea = document.getElementById("game-area");
     const words = wordData[selectedClass][selectedLanguage];
-
+    
     gameArea.innerHTML = `
         <h2>Flashcards</h2>
-        <p>Match Hebrew words with their translations.</p>
-        <div id="flashcards"></div>
+        <div id="flashcards-container" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
     `;
-
-    const flashcardsContainer = document.getElementById('flashcards');
-    flashcardsContainer.style.display = "flex";
-    flashcardsContainer.style.flexWrap = "wrap";
 
     const cards = [];
     words.forEach((word, index) => {
@@ -44,23 +39,30 @@ function startFlashcards() {
         cards.push({ text: word.translation, id: translation-${index}, type: "translation" });
     });
 
+    // Shuffle cards
     cards.sort(() => Math.random() - 0.5);
 
+    // Render cards
+    const container = document.getElementById("flashcards-container");
     cards.forEach((card) => {
         const cardElement = document.createElement("div");
         cardElement.className = "card";
         cardElement.id = card.id;
         cardElement.textContent = card.text;
-
-        cardElement.addEventListener("click", () => handleCardClick(cardElement, card));
-        flashcardsContainer.appendChild(cardElement);
+        cardElement.style.cssText = `
+            width: 100px; height: 50px; border: 1px solid #000;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background: #f9f9f9;
+        `;
+        cardElement.addEventListener("click", () => handleFlashcardClick(cardElement, card));
+        container.appendChild(cardElement);
     });
 }
 
 let firstCard = null;
 let secondCard = null;
 
-function handleCardClick(cardElement, card) {
+function handleFlashcardClick(cardElement, card) {
     if (cardElement.classList.contains("matched")) return;
 
     cardElement.style.background = "#ddd";
@@ -70,17 +72,19 @@ function handleCardClick(cardElement, card) {
         firstCard = { cardElement, card };
     } else {
         secondCard = { cardElement, card };
-        checkMatch();
+        checkFlashcardMatch();
     }
 }
 
-function checkMatch() {
+function checkFlashcardMatch() {
     if (firstCard.card.type !== secondCard.card.type &&
         firstCard.card.id.split("-")[1] === secondCard.card.id.split("-")[1]) {
         firstCard.cardElement.classList.add("matched");
         secondCard.cardElement.classList.add("matched");
     } else {
         setTimeout(() => {
+            firstCard.cardElement.style.background = "#f9f9f9";
+            secondCard.cardElement.style.background = "#f9f9f9";
             firstCard.cardElement.classList.remove("flipped");
             secondCard.cardElement.classList.remove("flipped");
         }, 1000);
@@ -89,36 +93,30 @@ function checkMatch() {
     secondCard = null;
 }
 
-// Start the Match Word to Picture Game
+// Start the Match Word to Picture game
 function startMatchGame() {
-    const gameArea = document.getElementById('game-area');
+    const gameArea = document.getElementById("game-area");
     const words = wordData[selectedClass][selectedLanguage];
 
     gameArea.innerHTML = `
         <h2>Match Word to Picture</h2>
-        <p>Drag the Hebrew word to the matching blank space.</p>
-        <div id="match-game"></div>
+        <div id="match-game-container" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
     `;
 
-    const matchGameContainer = document.getElementById('match-game');
-    matchGameContainer.style.display = "flex";
-    matchGameContainer.style.flexWrap = "wrap";
-
+    const container = document.getElementById("match-game-container");
     words.forEach((word) => {
         const wordElement = document.createElement("div");
-        wordElement.className = "word";
         wordElement.textContent = word.hebrew;
-        wordElement.style.border = "1px solid black";
-        wordElement.style.padding = "10px";
-        wordElement.style.cursor = "pointer";
+        wordElement.style.cssText = `
+            width: 100px; height: 50px; border: 1px solid #000;
+            text-align: center; display: flex; align-items: center; justify-content: center;
+        `;
 
         const blankSpace = document.createElement("div");
-        blankSpace.className = "blank";
-        blankSpace.style.width = "100px";
-        blankSpace.style.height = "50px";
-        blankSpace.style.border = "1px dashed gray";
+        blankSpace.style.cssText = `width: 100px; height: 50px; border: 1px dashed gray;
+        `;
 
-        matchGameContainer.appendChild(wordElement);
-        matchGameContainer.appendChild(blankSpace);
+        container.appendChild(wordElement);
+        container.appendChild(blankSpace);
     });
 }
