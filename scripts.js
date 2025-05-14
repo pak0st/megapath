@@ -1,4 +1,4 @@
-// Data for words by class and language
+// Data for words
 const wordData = {
     yud: {
         russian: [
@@ -23,11 +23,20 @@ const wordData = {
 let selectedClass = "yud";
 let selectedLanguage = "russian";
 
+// Function to initialize the game buttons
+function initializeGameButtons() {
+    const flashcardsBtn = document.getElementById("flashcards-btn");
+    const matchGameBtn = document.getElementById("matchgame-btn");
+
+    flashcardsBtn.addEventListener("click", startFlashcards);
+    matchGameBtn.addEventListener("click", startMatchGame);
+}
+
 // Start the Flashcards game
 function startFlashcards() {
     const gameArea = document.getElementById("game-area");
     const words = wordData[selectedClass][selectedLanguage];
-    
+
     gameArea.innerHTML = `
         <h2>Flashcards</h2>
         <div id="flashcards-container" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
@@ -39,21 +48,14 @@ function startFlashcards() {
         cards.push({ text: word.translation, id: translation-${index}, type: "translation" });
     });
 
-    // Shuffle cards
     cards.sort(() => Math.random() - 0.5);
 
-    // Render cards
     const container = document.getElementById("flashcards-container");
     cards.forEach((card) => {
         const cardElement = document.createElement("div");
         cardElement.className = "card";
         cardElement.id = card.id;
         cardElement.textContent = card.text;
-        cardElement.style.cssText = `
-            width: 100px; height: 50px; border: 1px solid #000;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; background: #f9f9f9;
-        `;
         cardElement.addEventListener("click", () => handleFlashcardClick(cardElement, card));
         container.appendChild(cardElement);
     });
@@ -77,16 +79,13 @@ function handleFlashcardClick(cardElement, card) {
 }
 
 function checkFlashcardMatch() {
-    if (firstCard.card.type !== secondCard.card.type &&
-        firstCard.card.id.split("-")[1] === secondCard.card.id.split("-")[1]) {
+    if (firstCard.card.id.split("-")[1] === secondCard.card.id.split("-")[1]) {
         firstCard.cardElement.classList.add("matched");
         secondCard.cardElement.classList.add("matched");
     } else {
         setTimeout(() => {
-            firstCard.cardElement.style.background = "#f9f9f9";
-            secondCard.cardElement.style.background = "#f9f9f9";
-            firstCard.cardElement.classList.remove("flipped");
-            secondCard.cardElement.classList.remove("flipped");
+            firstCard.cardElement.style.background = "";
+            secondCard.cardElement.style.background = "";
         }, 1000);
     }
     firstCard = null;
@@ -113,10 +112,13 @@ function startMatchGame() {
         `;
 
         const blankSpace = document.createElement("div");
-        blankSpace.style.cssText = `width: 100px; height: 50px; border: 1px dashed gray;
+        blankSpace.style.cssText = `
+            width: 100px; height: 50px; border: 1px dashed gray;
         `;
 
         container.appendChild(wordElement);
         container.appendChild(blankSpace);
     });
 }
+
+// Initialize event listeners on page loadwindow.onload = initializeGameButtons;
