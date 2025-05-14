@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Games</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="js/scripts.js" defer></script>
 </head>
 <body>
     <h1>Choose a Game</h1>
     <div id="game-selection">
-        <button id="flashcards-btn">Play Flashcards</button>
-        <button id="matchgame-btn">Play Match Word to Picture</button>
+        <button onclick="startFlashcards()">Play Flashcards</button>
+        <button onclick="startMatchGame()">Play Match Word to Picture</button>
     </div>
     <div id="game-area"></div>
+    <!-- JavaScript file loaded here -->
+    <script src="js/scripts.js" defer></script>
 </body>
 </html>
