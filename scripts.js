@@ -89,11 +89,36 @@ function checkMatch() {
     secondCard = null;
 }
 
+// Start the Match Word to Picture Game
 function startMatchGame() {
     const gameArea = document.getElementById('game-area');
+    const words = wordData[selectedClass][selectedLanguage];
+
     gameArea.innerHTML = `
         <h2>Match Word to Picture</h2>
         <p>Drag the Hebrew word to the matching blank space.</p>
         <div id="match-game"></div>
     `;
+
+    const matchGameContainer = document.getElementById('match-game');
+    matchGameContainer.style.display = "flex";
+    matchGameContainer.style.flexWrap = "wrap";
+
+    words.forEach((word) => {
+        const wordElement = document.createElement("div");
+        wordElement.className = "word";
+        wordElement.textContent = word.hebrew;
+        wordElement.style.border = "1px solid black";
+        wordElement.style.padding = "10px";
+        wordElement.style.cursor = "pointer";
+
+        const blankSpace = document.createElement("div");
+        blankSpace.className = "blank";
+        blankSpace.style.width = "100px";
+        blankSpace.style.height = "50px";
+        blankSpace.style.border = "1px dashed gray";
+
+        matchGameContainer.appendChild(wordElement);
+        matchGameContainer.appendChild(blankSpace);
+    });
 }
